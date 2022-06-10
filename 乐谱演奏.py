@@ -108,5 +108,5 @@ if __name__ == '__main__':
     # 播放音乐
     __DaemonSynchronizationThread(musicGenerator, chordGenerator, speed)
 
-# python 乐谱演奏.py -m 紫竹调A轨.json -c 紫竹调B轨.json -s 96
-# python 乐谱演奏.py -m canonCLeft.json -c canonCRight.json -s 80
+# python 乐谱演奏.py -m ./score/紫竹调A轨.json -c ./score/紫竹调B轨.json -s 96
+# python 乐谱演奏.py -m ./score/canonCLeft.json -c ./score/canonCRight.json -s 80
