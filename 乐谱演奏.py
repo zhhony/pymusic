@@ -98,12 +98,18 @@ if __name__ == '__main__':
     musicGenerator = __MusicGenerator(musicWithBeat)
     chordGenerator = __MusicGenerator(chordWithBeat)
 
+    # 启动接口
+    warmUp = mp3play.load("D:\\WorkShop\\Python\\standard_pitch\\4E.mp3")
+    warmUp.volume(0)
+    warmUp.play()
+    sleep(0.1)
+    warmUp.stop()
 
+    # 播放音乐
     __DaemonSynchronizationThread(musicGenerator, chordGenerator, speed)
 
 # python 乐谱演奏.py -m 紫竹调A轨.json -c 紫竹调B轨.json -s 96
-
-
+# python 乐谱演奏.py -m canonCLeft.json -c canonCRight.json -s 80
 
 
 # bytes = b'\xe5\x88\x9d\xe5\xa7\x8b\xe5\x8c\x96 MCI \xe6\x97\xb6\xe5\x8f\x91\xe7\x94\x9f\xe9\x97\xae\xe9\xa2\x98\xe3\x80\x82'
@@ -112,7 +118,7 @@ if __name__ == '__main__':
 # note = '4C'
 # path = Path('D:\\WorkShop\\Python\\standard_pitch')  # 88标准音位置
 # mp3Path = path / (note + '.mp3')
-# note = mp3play.load(str(mp3Path))
+#
 # note.volume(100)
 # note.play()
 # sleep(4)
