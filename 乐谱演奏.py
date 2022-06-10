@@ -9,7 +9,7 @@ from typing import *
 
 # 定义发声函数
 def __voice(note: str, voice: int) -> None:
-    path = Path('D:/WorkShop/Python/standard_pitch')  # 88标准音位置
+    path = Path('./standard_pitch')  # 88标准音位置
     mp3Path = str(path / (note + '.mp3'))
     note = mp3play.load(mp3Path)
     note.volume(voice)
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     chordGenerator = __MusicGenerator(chordWithBeat)
 
     # 预热接口
-    warmUp = mp3play.load("D:\\WorkShop\\Python\\standard_pitch\\4E.mp3")
+    warmUp = mp3play.load("./standard_pitch/4E.mp3")
     warmUp.volume(0)
     warmUp.play()
     sleep(0.1)
