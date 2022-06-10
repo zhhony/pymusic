@@ -31,7 +31,7 @@ def __TimeStamp(music: list) -> list:
         notesWithBeat = notes.copy()
         notesWithBeat.append(int(beat))
         musicScoreWithBeat.append(notesWithBeat)
-        beat += notes[1]*32
+        beat += notes[1]*8
     return musicScoreWithBeat
 
 
@@ -41,7 +41,7 @@ def __MusicGenerator(music: list) -> list:
         yield notes
 
 
-# 后台同步进程，每过MUSIC_TIME_STAMP秒，往前推进一基本拍，并进行一次乐谱检测。如果监测到音符组，则对此音符执行子进程。
+# 后台同步进程，每过MUSIC_TIME_STAMP秒，往前推进一基本拍，并进行一次乐谱检测。如果监测到音符组，则对此音符组执行子进程。
 def __DaemonSynchronizationThread(musicGeneratorA: Generator, musicGeneratorB: Generator, speed: int) -> float:
     MUSIC_MIN_TIME_STAMP = 60/speed/8  # 一基本拍的时间(基本拍：一个32分音符为一拍，区别于一般意义的拍)
     beat = 0
@@ -69,7 +69,7 @@ def __addThread(notes: list) -> None:
 
 
 # 读取文件获取基础参数
-userCmd = ['紫竹调A轨.json', '紫竹调B轨.json', 440]
+userCmd = ['紫竹调A轨.json', '紫竹调B轨.json', 96]
 music = __MusicLoad(Path(userCmd[0]))
 chord = __MusicLoad(Path(userCmd[1]))
 speed = userCmd[2]
