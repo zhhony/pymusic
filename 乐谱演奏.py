@@ -1,5 +1,6 @@
 import mp3play
 import json
+import argparse
 from time import sleep
 from pathlib import Path
 from threading import Thread
@@ -8,7 +9,7 @@ from typing import *
 
 # 定义发声函数
 def __voice(note: str, voice: int) -> None:
-    path = Path('D:/WorkShop/Python/standard_pitch')  # 88标准音位置
+    path = Path('D:\\WorkShop\\Python\\standard_pitch')  # 88标准音位置
     mp3Path = path / (note + '.mp3')
     note = mp3play.load(str(mp3Path))
     note.volume(voice)
@@ -42,7 +43,7 @@ def __MusicGenerator(music: list) -> list:
 
 
 # 后台同步进程，每过MUSIC_TIME_STAMP秒，往前推进一基本拍，并进行一次乐谱检测。如果监测到音符组，则对此音符组执行子进程。
-def __DaemonSynchronizationThread(musicGeneratorA: Generator, musicGeneratorB: Generator, speed: int) -> float:
+def __DaemonSynchronizationThread(musicGeneratorA: Generator, musicGeneratorB: Generator, speed: int) -> None:
     MUSIC_MIN_TIME_STAMP = 60/speed/8  # 一基本拍的时间(基本拍：一个32分音符为一拍，区别于一般意义的拍)
     beat = 0
     notesA = next(musicGeneratorA)  # 获取A的音符组
@@ -78,20 +79,44 @@ def __addThread(notes: list) -> None:
         j.start()
 
 
-# 读取文件获取基础参数
-# userCmd = ['紫竹调A轨.json', '紫竹调B轨.json', 96]
-userCmd = ['canonCLeft.json', 'canonCRight.Json', 70]
-music = __MusicLoad(Path(userCmd[0]))
-chord = __MusicLoad(Path(userCmd[1]))
-speed = userCmd[2]
+# 封装为控制台命令
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-m', '--music', help='主弦律所在路径')
+    parser.add_argument('-c', '--chord', help='和弦所在路径')
+    parser.add_argument('-s', '--speed', type=int, help='演奏速度')
 
-# 转化为带有基本拍的乐谱
-musicScoreWithBeat = __TimeStamp(music)
-chordScoreWithBeat = __TimeStamp(chord)
+    arge = parser.parse_args()
 
-# 创造乐谱生成器
-musicGenerator = __MusicGenerator(musicScoreWithBeat)
-chordGenerator = __MusicGenerator(chordScoreWithBeat)
+    # 读取文件
+    music = __MusicLoad(Path(arge.music))
+    chord = __MusicLoad(Path(arge.chord))
+    speed = arge.speed
+
+    # 转化为带有基本拍的乐谱
+    musicWithBeat = __TimeStamp(music)
+    chordWithBeat = __TimeStamp(chord)
+
+    # 创造乐谱生成器
+    musicGenerator = __MusicGenerator(musicWithBeat)
+    chordGenerator = __MusicGenerator(chordWithBeat)
 
 
-__DaemonSynchronizationThread(musicGenerator, chordGenerator, speed)
+    __DaemonSynchronizationThread(musicGenerator, chordGenerator, speed)
+
+# python 乐谱演奏.py -m 紫竹调A轨.json -c 紫竹调B轨.json -s 96
+
+
+
+
+# bytes = b'\xe5\x88\x9d\xe5\xa7\x8b\xe5\x8c\x96 MCI \xe6\x97\xb6\xe5\x8f\x91\xe7\x94\x9f\xe9\x97\xae\xe9\xa2\x98\xe3\x80\x82'
+# bytes.decode('utf8')
+
+# note = '4C'
+# path = Path('D:\\WorkShop\\Python\\standard_pitch')  # 88标准音位置
+# mp3Path = path / (note + '.mp3')
+# note = mp3play.load(str(mp3Path))
+# note.volume(100)
+# note.play()
+# sleep(4)
+# note.stop()
