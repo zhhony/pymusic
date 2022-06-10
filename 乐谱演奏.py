@@ -42,7 +42,7 @@ def __MusicGenerator(music: list) -> list:
         yield notes
 
 
-# 后台同步进程，每过MUSIC_TIME_STAMP秒，往前推进一基本拍，并与乐谱进行一次关联。如果关联到音符组，则对此音符组执行__addThread调用。
+# 同步函数，每过MUSIC_TIME_STAMP秒，往前推进一基本拍，并与乐谱进行一次关联。如果关联到音符组，则对此音符组执行__addThread调用。
 def __DaemonSynchronizationThread(musicGeneratorA: Generator, musicGeneratorB: Generator, speed: int) -> None:
     MUSIC_MIN_TIME_STAMP = 60/speed/8  # 一基本拍的时间(基本拍：一个32分音符为一拍，区别于一般意义的拍)
     beat = 0
@@ -69,7 +69,7 @@ def __DaemonSynchronizationThread(musicGeneratorA: Generator, musicGeneratorB: G
             sleep(MUSIC_MIN_TIME_STAMP)
 
 
-# 针对传递过来的音符组，建立演奏线程，调用__voice处理
+# 针对传递过来的音符组，建立演奏线程，在线程中调用__voice处理
 def __addThread(notes: list) -> None:
     for note in notes[0]:
         t = Thread(target=__voice, args=(note, notes[2]))
