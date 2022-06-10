@@ -9,9 +9,9 @@ from typing import *
 
 # 定义发声函数
 def __voice(note: str, voice: int) -> None:
-    path = Path('D:\\WorkShop\\Python\\standard_pitch')  # 88标准音位置
-    mp3Path = path / (note + '.mp3')
-    note = mp3play.load(str(mp3Path))
+    path = Path('D:/WorkShop/Python/standard_pitch')  # 88标准音位置
+    mp3Path = str(path / (note + '.mp3'))
+    note = mp3play.load(mp3Path)
     note.volume(voice)
     note.play()
     sleep(4)
@@ -71,12 +71,9 @@ def __DaemonSynchronizationThread(musicGeneratorA: Generator, musicGeneratorB: G
 
 # 针对传递过来的音符组，建立演奏线程
 def __addThread(notes: list) -> None:
-    ThreadList = []
     for note in notes[0]:
         t = Thread(target=__voice, args=(note, notes[2]))
-        ThreadList.append(t)
-    for j in ThreadList:
-        j.start()
+        t.start()
 
 
 # 封装为控制台命令
