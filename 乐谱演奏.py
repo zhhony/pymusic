@@ -47,15 +47,25 @@ def __DaemonSynchronizationThread(musicGeneratorA: Generator, musicGeneratorB: G
     beat = 0
     notesA = next(musicGeneratorA)  # 获取A的音符组
     notesB = next(musicGeneratorB)  # 获取B的音符组
+    errorcountA, errorcountB = 0, 0
     while True:
-        if notesA[-1] == beat:
-            __addThread(notesA)
-            notesA = next(musicGeneratorA)  # 获取下一个音符组
-        if notesB[-1] == beat:
-            __addThread(notesB)
-            notesB = next(musicGeneratorB)  # 获取下一个音符组
-        beat += 1
-        sleep(MUSIC_MIN_TIME_STAMP)
+        try:
+            if notesA[-1] == beat:
+                __addThread(notesA)
+                notesA = next(musicGeneratorA)  # 获取下一个音符组
+        except StopIteration:
+            errorcountA = 1
+        try:
+            if notesB[-1] == beat:
+                __addThread(notesB)
+                notesB = next(musicGeneratorB)  # 获取下一个音符组
+        except StopIteration:
+            errorcountB = 1
+        finally:
+            if errorcountA + errorcountB == 2:
+                break
+            beat += 1
+            sleep(MUSIC_MIN_TIME_STAMP)
 
 
 # 针对传递过来的音符组，建立演奏线程
@@ -69,7 +79,8 @@ def __addThread(notes: list) -> None:
 
 
 # 读取文件获取基础参数
-userCmd = ['紫竹调A轨.json', '紫竹调B轨.json', 96]
+# userCmd = ['紫竹调A轨.json', '紫竹调B轨.json', 96]
+userCmd = ['canonCLeft.json', 'canonCRight.Json', 70]
 music = __MusicLoad(Path(userCmd[0]))
 chord = __MusicLoad(Path(userCmd[1]))
 speed = userCmd[2]
