@@ -48,22 +48,22 @@ def __DaemonSynchronizationThread(musicGeneratorA: Generator, musicGeneratorB: G
     beat = 0
     notesA = next(musicGeneratorA)  # 获取A的音符组
     notesB = next(musicGeneratorB)  # 获取B的音符组
-    errorcountA, errorcountB = 0, 0
+    errorcountA = errorcountB = False  # 用于记录谱子生成器终止的信号
     while True:
         try:
             if notesA[-1] == beat:
                 __addThread(notesA)
                 notesA = next(musicGeneratorA)  # 获取下一个音符组
         except StopIteration:
-            errorcountA = 1
+            errorcountA = True  # 捕获A谱子终止的信号
         try:
             if notesB[-1] == beat:
                 __addThread(notesB)
                 notesB = next(musicGeneratorB)  # 获取下一个音符组
         except StopIteration:
-            errorcountB = 1
+            errorcountB = True  # 捕获B谱子终止的信号
         finally:
-            if errorcountA + errorcountB == 2:  # 两个谱子都放完的情况下退出此函数
+            if errorcountA * errorcountB == True:  # 两个谱子都放完的情况下退出此函数
                 break
             beat += 1
             sleep(MUSIC_MIN_TIME_STAMP)
